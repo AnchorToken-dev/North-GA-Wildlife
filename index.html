@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North Georgia — Weather & Wildlife</title>
+<meta name="description" content="North Georgia weather, storm tracking, and backyard wildlife. Live NWS alerts, radar, and field notes from the ridge line to the treeline.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+--bg: #0a0f14;
+--panel: #10171e;
+--panel2: #141d26;
+--line: #1e2a36;
+--text: #e6edf3;
+--muted: #8b98a5;
+--cyan: #22d3ee;
+--lime: #a3e635;
+--amber: #fbbf24;
+--red: #f87171;
+}
+html { scroll-behavior: smooth; }
+body {
+font-family: 'Inter', system-ui, sans-serif;
+background: var(--bg);
+color: var(--text);
+min-height: 100vh;
+line-height: 1.6;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* ── NAV ── */
+.nav {
+position: sticky; top: 0; z-index: 100;
+display: flex; justify-content: space-between; align-items: center;
+padding: 14px 24px;
+background: rgba(10,15,20,0.88);
+backdrop-filter: blur(14px);
+border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 10px; font-family: 'Archivo Black', sans-serif; font-size: 1.05rem; letter-spacing: 1px; }
+.brand .bolt { color: var(--cyan); }
+.brand .leaf { color: var(--lime); }
+.navlinks { display: flex; gap: 22px; }
+.navlinks a { color: var(--muted); text-decoration: none; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase; transition: 0.2s; }
+.navlinks a:hover { color: var(--text); }
+@media (max-width: 640px) { .navlinks { display: none; } }
+
+/* ── HERO ── */
+.hero {
+position: relative;
+padding: 90px 20px 70px;
+text-align: center;
+background:
+radial-gradient(ellipse at 50% 0%, #0e2a33 0%, var(--bg) 60%),
+linear-gradient(var(--line) 1px, transparent 1px),
+linear-gradient(90deg, var(--line) 1px, transparent 1px);
+background-size: 100% 100%, 44px 44px, 44px 44px;
+border-bottom: 3px solid var(--cyan);
+overflow: hidden;
+}
+.hero::after {
+content: ''; position: absolute; inset: 0;
+background: linear-gradient(115deg, transparent 45%, rgba(34,211,238,0.08) 50%, transparent 55%);
+pointer-events: none;
+}
+.hero .kicker {
+font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+letter-spacing: 6px; font-size: 0.95rem; color: var(--lime);
+text-transform: uppercase; margin-bottom: 18px;
+}
+.hero h1 {
+font-family: 'Archivo Black', sans-serif;
+font-size: clamp(2.6rem, 8vw, 5.5rem);
+line-height: 0.95;
+text-transform: uppercase;
+letter-spacing: -1px;
+}
+.hero h1 .line2 { color: var(--cyan); display: block; }
+.hero p.tag { margin-top: 22px; color: var(--muted); font-size: 1.05rem; max-width: 560px; margin-left: auto; margin-right: auto; }
+.hero .cta-row { margin-top: 30px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.hero .cta {
+font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 2px;
+text-transform: uppercase; text-decoration: none; font-size: 1rem;
+padding: 13px 30px; border-radius: 4px; transition: 0.2s;
+}
+.cta.wx { background: var(--cyan); color: #06222b; }
+.cta.wx:hover { background: #67e8f9; }
+.cta.wild { background: transparent; color: var(--lime); border: 2px solid var(--lime); }
+.cta.wild:hover { background: var(--lime); color: #1a2b05; }
+
+/* ── LIVE TICKER ── */
+.ticker {
+background: var(--panel);
+border-bottom: 1px solid var(--line);
+overflow: hidden;
+white-space: nowrap;
+}
+.ticker-inner {
+display: inline-block;
+padding: 10px 0;
+font-family: 'Barlow Condensed', sans-serif;
+font-weight: 600; letter-spacing: 2px; text-transform: uppercase; font-size: 0.95rem;
+color: var(--muted);
+animation: tick 40s linear infinite;
+}
+.ticker-inner .hot { color: var(--amber); }
+@keyframes tick { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ── SECTIONS ── */
+section { padding: 70px 20px; }
+.section-head { margin-bottom: 34px; }
+.section-head .kick {
+font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+letter-spacing: 4px; font-size: 0.85rem; color: var(--lime);
+text-transform: uppercase; display: block; margin-bottom: 8px;
+}
+.section-head h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); text-transform: uppercase; letter-spacing: -0.5px; }
+.section-head h2 span { color: var(--cyan); }
+.section-head p { color: var(--muted); margin-top: 10px; max-width: 640px; }
+
+/* Alerts */
+.alerts { display: flex; flex-direction: column; gap: 12px; }
+.alert-card {
+background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--muted);
+border-radius: 6px; padding: 16px 20px;
+}
+.alert-card.sev-Extreme, .alert-card.sev-Severe { border-left-color: var(--red); }
+.alert-card.sev-Moderate { border-left-color: var(--amber); }
+.alert-card.sev-Minor, .alert-card.sev-Unknown { border-left-color: var(--cyan); }
+.alert-card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.alert-card .ev { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.15rem; letter-spacing: 1px; text-transform: uppercase; }
+.alert-card .sev-badge { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 1.5px; font-size: 0.75rem; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; }
+.sev-Extreme .sev-badge, .sev-Severe .sev-badge { background: rgba(248,113,113,0.15); color: var(--red); }
+.sev-Moderate .sev-badge { background: rgba(251,191,36,0.15); color: var(--amber); }
+.sev-Minor .sev-badge, .sev-Unknown .sev-badge { background: rgba(34,211,238,0.15); color: var(--cyan); }
+.alert-card .headline { margin-top: 8px; font-size: 0.95rem; }
+.alert-card .meta { margin-top: 8px; font-size: 0.78rem; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+.no-alerts { background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--lime); border-radius: 6px; padding: 20px; }
+.no-alerts strong { color: var(--lime); }
+
+/* Forecast */
+.forecast { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 30px; }
+@media (max-width: 900px) { .forecast { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 560px) { .forecast { grid-template-columns: repeat(2, 1fr); } }
+.fday { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 12px; text-align: center; }
+.fday .d { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.85rem; color: var(--cyan); }
+.fday img { width: 44px; height: 44px; margin: 8px auto; display: block; }
+.fday .t { font-family: 'Archivo Black', sans-serif; font-size: 1.4rem; }
+.fday .s { font-size: 0.72rem; color: var(--muted); margin-top: 4px; min-height: 28px; }
+
+/* Field notes */
+.notes {
+margin-top: 30px; background: var(--panel2); border: 1px solid var(--line);
+border-radius: 6px; padding: 24px;
+}
+.notes h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--lime); font-size: 1.1rem; margin-bottom: 10px; }
+.notes p { color: var(--muted); font-size: 0.92rem; }
+
+/* Radar */
+.radar-block { margin-top: 30px; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 24px; }
+.radar-block h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); font-size: 1.1rem; margin-bottom: 6px; }
+.radar-block p { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+.radar-block img { width: 100%; border-radius: 6px; border: 1px solid var(--line); display: block; background: #000; }
+.radar-block a { color: var(--cyan); font-size: 0.85rem; }
+
+/* Wildlife */
+.cam {
+background: #000; border: 1px solid var(--line); border-radius: 6px;
+position: relative; padding-top: 56.25%; overflow: hidden; margin-bottom: 30px;
+}
+.cam iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.cam-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 760px) { .cam-grid { grid-template-columns: 1fr; } }
+.cam-grid .cam { margin-bottom: 0; }
+.cam .cam-label {
+position: absolute; top: 12px; left: 12px; z-index: 2;
+font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 2px;
+text-transform: uppercase; font-size: 0.8rem; color: #0a0f14;
+background: var(--lime); padding: 4px 12px; border-radius: 3px;
+}
+.cam .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #ef4444; margin-right: 6px; animation: pulse 1.4s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.g-card {
+background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+overflow: hidden; transition: 0.2s;
+}
+.g-card:hover { border-color: var(--lime); transform: translateY(-2px); }
+.g-card .ph {
+aspect-ratio: 4/3; background:
+repeating-linear-gradient(45deg, #131c26 0 12px, #10171e 12px 24px);
+display: flex; align-items: center; justify-content: center;
+font-size: 2.6rem;
+}
+.g-card .cap { padding: 12px 14px; }
+.g-card .cap .sp { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 1rem; }
+.g-card .cap .cm { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+.g-card .cap .soon { display: inline-block; margin-top: 6px; font-size: 0.7rem; color: var(--lime); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .about-grid { grid-template-columns: 1fr; } }
+.about-card { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 22px; }
+.about-card h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--cyan); margin-bottom: 8px; font-size: 1.05rem; }
+.about-card p { color: var(--muted); font-size: 0.9rem; }
+
+/* Footer */
+.footer { border-top: 1px solid var(--line); padding: 34px 20px; text-align: center; color: var(--muted); font-size: 0.82rem; }
+.footer a { color: var(--cyan); text-decoration: none; }
+.footer .uprock-note { margin-top: 12px; font-size: 0.8rem; color: #9aa3b2; }
+.footer .uprock-note a { color: var(--lime); font-weight: 600; }
+
+.updated { font-size: 0.75rem; color: var(--muted); margin-top: 10px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+.msg-error { color: var(--red); font-size: 0.9rem; }
+@media (max-width: 640px) { .hero { padding: 60px 16px 50px; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+<div class="brand"><span class="bolt">⚡</span> N.GA<span class="leaf">WX+WILD</span></div>
+<div class="navlinks">
+<a href="#weather">Weather</a>
+<a href="#radar">Radar</a>
+<a href="#wildlife">Wildlife</a>
+<a href="#about">About</a>
+</div>
+</nav>
+
+<header class="hero">
+<span class="kicker">From the ridge line to the treeline</span>
+<h1>North Georgia<br><span class="line2">Weather & Wildlife</span></h1>
+<p class="tag">Storms tracked from the Blue Ridge foothills. Backyard wildlife documented from the porch. No hype — just what's happening outside, reported straight.</p>
+<div class="cta-row">
+<a class="cta wx" href="#weather">Live Conditions</a>
+<a class="cta wild" href="#wildlife">Wildlife Cam</a>
+</div>
+</header>
+
+<div class="ticker"><div class="ticker-inner" id="ticker">Loading live conditions…</div></div>
+
+<section id="weather">
+<div class="wrap">
+<div class="section-head">
+<span class="kick">Live Data · NWS Feed</span>
+<h2>Weather <span>Watch</span></h2>
+<p>Live watches, warnings, and advisories for North Georgia counties, plus the 7-day outlook for the Woodstock area — pulled straight from the National Weather Service.</p>
+</div>
+<div id="alerts"><p class="msg-error">Loading alerts…</p></div>
+<div id="forecast"></div>
+<div class="notes">
+<h3>☝ Field Notes</h3>
+<p>My own report for today. — [Write what you're seeing: sky conditions, temps, what the storms look like, what the critters are doing. This is the personal part that makes the site yours.]</p>
+</div>
+</div>
+</section>
+
+<section id="radar" style="background:var(--panel);">
+<div class="wrap">
+<div class="section-head">
+<span class="kick">KFFC · Peachtree City</span>
+<h2>Radar <span>Loop</span></h2>
+<p>North Georgia radar from NWS Peachtree City. If it's raining on the ridge, it shows up here first.</p>
+</div>
+<div class="radar-block">
+<h3>KFFC Regional Radar</h3>
+<p>Latest loop — updates every few minutes.</p>
+<img id="radar-img" src="https://radar.weather.gov/ridge/standard/KFFC_loop.gif" alt="KFFC radar loop" onerror="this.style.display='none';document.getElementById('radar-fallback').style.display='block';">
+<div id="radar-fallback" style="display:none; padding:12px 0;">
+<a href="https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOm51bGwsImFuaW1hdGlvblNwZWVkIjoxMDAsImNvbG9ycyI6InZpc2libGUiLCJkYXRlIjoiMjAyNS0wMS0wMVQwMDowMDowMFoiLCJlbWFpbCI6bnVsbCwiZm9yY2Vsb3dQb3NpdGlvbiI6bnVsbCwiZm9yY2Vsb3dTZXR0aW5ncyI6bnVsbCwiaG9tZVBvc2l0aW9uIjpudWxsLCJob3ZlclRpbWVPZmZzZXQiOjAsImxvY2F0aW9uIjpudWxsLCJsb29wIjp0cnVlLCJtZW51IjoidmlzaWJsZSIsIm5hdGl2ZSI6ZmFsc2UsInNob3dMYWJlbHMiOnRydWUsInNob3dNb3VzZU92ZXIiOnRydWUsInNob3dPcGFjaXR5IjowLjgsInNob3dSYW5nZXNSaW5ncyI6ZmFsc2UsInNob3dTZXR0aW5ncyI6ZmFsc2UsInNob3dUaW1lIjpmYWxzZSwic2hvd1pvb21Db250cm9sIjp0cnVlLCJ6b29tIjo1fQ==" target="_blank">Open interactive radar →</a>
+</div>
+<p class="updated">Radar: NWS KFFC</p>
+</div>
+</div>
+</section>
+
+<section id="wildlife">
+<div class="wrap">
+<div class="section-head">
+<span class="kick">Live from the yard</span>
+<h2>Wildlife <span>Watch</span></h2>
+<p>Whoever shows up at the feeders gets documented. Birds, squirrels, chipmunks — the whole neighborhood crew.</p>
+</div>
+
+<div class="cam-grid">
+<div class="cam">
+<span class="cam-label"><span class="live-dot"></span>Berry College Eagles</span>
+<iframe src="https://vimeo.com/event/4809079/embed" title="Berry College eagle cam" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+</div>
+<div class="cam">
+<span class="cam-label"><span class="live-dot"></span>Chattahoochee Forest</span>
+<iframe src="https://www.youtube.com/embed/rQUH9AbcLBs" title="Chattahoochee National Forest live cam" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</div>
+</div>
+
+<p style="margin-top:20px; color:var(--muted); font-size:0.9rem;">
+More live cams: <a href="https://ga.water.usgs.gov/rivercam/webcam-helenAPI2b.php" target="_blank" style="color:var(--cyan);">Chattahoochee River @ Helen</a> ·
+<a href="https://ga.water.usgs.gov/rivercam/webcam-columbus.php" target="_blank" style="color:var(--cyan);">Chattahoochee River @ Columbus</a> (USGS)
+</p>
+<p style="margin-top:6px; color:var(--muted); font-size:0.8rem;">
+My backyard cam is coming — this is the view while it's being built.
+</p>
+
+<div class="gallery">
+<div class="g-card"><div class="ph">🐦</div><div class="cap"><div class="sp">Carolina Chickadee</div><div class="cm">Year-round regular at the feeder</div><span class="soon">Photo coming</span></div></div>
+<div class="g-card"><div class="ph">🐿️</div><div class="cap"><div class="sp">Eastern Gray Squirrel</div><div class="cm">The feeder's main character</div><span class="soon">Photo coming</span></div></div>
+<div class="g-card"><div class="ph">🐿️</div><div class="cap"><div class="sp">Eastern Chipmunk</div><div class="cm">Fast, loud, always busy</div><span class="soon">Photo coming</span></div></div>
+<div class="g-card"><div class="ph">🦅</div><div class="cap"><div class="sp">Red-tailed Hawk</div><div class="cm">Patrols the treeline</div><span class="soon">Photo coming</span></div></div>
+<div class="g-card"><div class="ph">🦌</div><div class="cap"><div class="sp">White-tailed Deer</div><div class="cm">Dawn and dusk visitors</div><span class="soon">Photo coming</span></div></div>
+<div class="g-card"><div class="ph">🦝</div><div class="cap"><div class="sp">Raccoon</div><div class="cm">Night shift crew</div><span class="soon">Photo coming</span></div></div>
+</div>
+</div>
+</section>
+
+<section id="about" style="background:var(--panel);">
+<div class="wrap">
+<div class="section-head">
+<span class="kick">Who's behind the lens</span>
+<h2>About <span>This Site</span></h2>
+</div>
+<div class="about-grid">
+<div class="about-card">
+<h3>⚡ The Weather Side</h3>
+<p>Personal weather tracking for North Georgia. Live data comes straight from the National Weather Service API. I'm a trained-eye storm watcher, not a meteorologist — when severe weather threatens, trust your local NWS warnings first. This site is my own report, for my own community.</p>
+</div>
+<div class="about-card">
+<h3>🌿 The Wildlife Side</h3>
+<p>Everything here is what actually shows up in the yard. Feeders, trees, and a camera pointed at the good stuff. Photos are mine, taken from the porch — nobody gets chased, nobody gets harassed. Just documentation of the neighborhood.</p>
+</div>
+</div>
+</div>
+</section>
+
+<footer class="footer">
+<p>North Georgia Weather & Wildlife — from the ridge line to the treeline. ⚡🌿</p>
+<p style="margin-top:4px;">Weather data: National Weather Service (api.weather.gov) · Not affiliated with NWS</p>
+<div class="uprock-note">
+Built with UpRock — my devices earn UPT sharing idle bandwidth.
+<a href="https://link.uprock.com/i/f0997b88" target="_blank">Join with my link, we both earn.</a>
+</div>
+</footer>
+
+<script>
+// ── NORTH GEORGIA COUNTIES (for alert filtering) ──
+const NGA_COUNTIES = [
+'Cherokee','Cobb','Bartow','Gordon','Murray','Whitfield','Fannin','Union','Towns','Rabun',
+'Habersham','White','Lumpkin','Dawson','Forsyth','Pickens','Gilmer','Hall','Banks','Stephens',
+'Franklin','Hart','Elbert','Madison','Jackson','Gwinnett','Paulding','Carroll','Douglas','Fulton'
+ ];
+
+// Woodstock, GA
+const POINT = '34.1010,-84.5190';
+
+async function fetchJson(url) {
+const r = await fetch(url, { headers: { 'Accept': 'application/geo+json' } });
+if (!r.ok) throw new Error('HTTP ' + r.status);
+return r.json();
+}
+
+function fmtTime(iso) {
+if (!iso) return '—';
+const d = new Date(iso);
+return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+
+async function loadForecast() {
+const el = document.getElementById('forecast');
+try {
+const pts = await fetchJson('https://api.weather.gov/points/' + POINT);
+const fc = await fetchJson(pts.properties.forecast);
+const periods = fc.properties.periods.slice(0, 7);
+el.innerHTML = '<div class="forecast">' + periods.map(p => (
+'<div class="fday">' +
+'<div class="d">' + (p.isDaytime ? p.name : p.name) + '</div>' +
+(p.icon ? '<img src="' + p.icon + '" alt="">' : '') +
+'<div class="t">' + p.temperature + '°' + p.temperatureUnit + '</div>' +
+'<div class="s">' + p.shortForecast + '</div>' +
+'</div>'
+)).join('') + '</div>';
+} catch (e) {
+el.innerHTML = '<p class="msg-error">Forecast unavailable: ' + e.message + '</p>';
+}
+}
+
+async function loadAlerts() {
+const el = document.getElementById('alerts');
+try {
+const data = await fetchJson('https://api.weather.gov/alerts/active?area=GA');
+const feats = (data.features || []).filter(f => {
+const area = (f.properties.areaDesc || '').toLowerCase();
+return NGA_COUNTIES.some(c => area.includes(c.toLowerCase()));
+});
+const sevOrder = { 'Extreme': 0, 'Severe': 1, 'Moderate': 2, 'Minor': 3, 'Unknown': 4 };
+feats.sort((a, b) => (sevOrder[a.properties.severity] ?? 4) - (sevOrder[b.properties.severity] ?? 4));
+
+if (!feats.length) {
+el.innerHTML = '<div class="no-alerts"><strong>ALL CLEAR —</strong> no active watches, warnings, or advisories for North Georgia right now.</div>';
+return;
+}
+el.innerHTML = feats.slice(0, 8).map(f => {
+const p = f.properties;
+const sev = p.severity || 'Unknown';
+return '<div class="alert-card sev-' + sev + '">' +
+'<div class="top"><span class="ev">' + p.event + '</span><span class="sev-badge">' + sev + '</span></div>' +
+'<div class="headline">' + p.headline + '</div>' +
+'<div class="meta">' + (p.areaDesc || '') + ' · Expires ' + fmtTime(p.expires) + '</div>' +
+'</div>';
+}).join('');
+} catch (e) {
+el.innerHTML = '<p class="msg-error">Alerts unavailable: ' + e.message + '</p>';
+}
+}
+
+async function loadCurrent() {
+// Ticker: current temp from the forecast's first daytime period
+try {
+const pts = await fetchJson('https://api.weather.gov/points/' + POINT);
+const fc = await fetchJson(pts.properties.forecast);
+const p = fc.properties.periods[0];
+document.getElementById('ticker').innerHTML =
+'<span class="hot">' + p.name + ':</span> ' + p.temperature + '°' + p.temperatureUnit +
+' · ' + p.shortForecast + ' · Wind ' + p.windSpeed + ' ' + p.windDirection +
+'  ·  ' +
+'North Georgia Weather & Wildlife — live from Woodstock  ·  ' +
+'Skywarn spotter trained — reports go to NWS Peachtree City  ·  ' +
+'Severe weather? Check local warnings first  ·  ';
+} catch (e) {
+document.getElementById('ticker').innerHTML = 'North Georgia Weather & Wildlife — live from Woodstock';
+}
+}
+
+loadForecast();
+loadAlerts();
+loadCurrent();
+</script>
+</body>
+</html>
