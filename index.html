@@ -481,11 +481,13 @@ async function loadReports() {
     } catch (e) {
         el.innerHTML = '<p class="msg-error">Reports unavailable: ' + e.message + '</p>';
     }
+
 }
 
 loadForecast();
 loadAlerts();
 loadCurrent();
+ loadReports();
 </script>
 </body>
 </html>
