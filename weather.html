@@ -161,13 +161,13 @@
         }
 
         async function loadAlerts() {
-            const el = document.getElementById('alerts');
-            try {
-                const data = await fetchJson('https://api.weather.gov/alerts/active?area=GA');
-                const feats = (data.features || []).filter(f => {
-                    const area = (f.properties.areaDesc || '').toLowerCase();
-                    return NGA_COUNTIES.some(c => area.includes(c.toLowerCase()));
-                });
+         const el = document.getElementById('alerts');
+         try {
+               const data = await fetchJson('https://api.weather.gov/alerts/active?area=GA');
+               const feats = (data.features || []).filter(f => {
+               const ugc = (f.properties.geocode && f.properties.geocode.UGC) || [];
+            return ugc.some(z => z.startsWith('GAZ'));
+        });
                 const sevOrder = { 'Extreme': 0, 'Severe': 1, 'Moderate': 2, 'Minor': 3, 'Unknown': 4 };
                 feats.sort((a, b) => (sevOrder[a.properties.severity] ?? 4) - (sevOrder[b.properties.severity] ?? 4));
 
