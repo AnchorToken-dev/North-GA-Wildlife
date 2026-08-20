@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North Georgia — Weather &amp; Wildlife</title>
+    <meta name="description" content="North Georgia weather, storm tracking, and backyard wildlife. Live NWS alerts, radar, and field notes from the ridge line to the treeline.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="brand"><span class="bolt">⚡</span> N.GA<span class="leaf">WX+WILD</span></div>
+        <div class="navlinks">
+            <a href="index.html" class="active">Home</a>
+            <a href="weather.html">Weather</a>
+            <a href="wildlife.html">Wildlife</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <span class="kicker">From the ridge line to the treeline</span>
+        <h1>North Georgia<br><span class="line2">Weather &amp; Wildlife</span></h1>
+        <p class="tag">Storms tracked from the Blue Ridge foothills. Backyard wildlife documented from the porch. No hype — just what's happening outside, reported straight.</p>
+        <div class="cta-row">
+            <a class="cta wx" href="weather.html">Live Conditions</a>
+            <a class="cta wild" href="wildlife.html">Wildlife Cams</a>
+        </div>
+    </header>
+
+    <div class="ticker"><div class="ticker-inner" id="ticker">Loading live conditions…</div></div>
+
+    <section id="now">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">Right now · Woodstock</span>
+                <h2>Current <span>Conditions</span></h2>
+                <p>Live from the National Weather Service — updated every hour.</p>
+            </div>
+            <div class="cond-strip" id="cond-strip">
+                <div class="cond"><div class="v">—</div><div class="l">Temp</div></div>
+                <div class="cond"><div class="v">—</div><div class="l">Wind</div></div>
+                <div class="cond"><div class="v">—</div><div class="l">Sky</div></div>
+                <div class="cond"><div class="v">—</div><div class="l">Humidity</div></div>
+            </div>
+            <div class="teaser-grid">
+                <a class="teaser" href="weather.html">
+                    <div class="big">⚡</div>
+                    <h3>Weather <span class="cy">Watch</span></h3>
+                    <p>Live watches, warnings, and advisories for North Georgia counties. 7-day forecast. KFFC radar. My field reports.</p>
+                    <span class="go">See the weather →</span>
+                </a>
+                <a class="teaser wild" href="wildlife.html">
+                    <div class="big">🌿</div>
+                    <h3>Wildlife <span class="lm">Watch</span></h3>
+                    <p>Live cams from the Berry College eagles and the Chattahoochee forest. Plus the regulars at the feeders.</p>
+                    <span class="go">See the wildlife →</span>
+                </a>
+            </div>
+            <div class="latest" id="latest-report">
+                <span class="lt-kick">☝ Latest Field Report</span>
+                <h3>Loading…</h3>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" style="background:var(--panel);">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">Who's behind the lens</span>
+                <h2>About <span>This Site</span></h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>⚡ The Weather Side</h3>
+                    <p>Personal weather tracking for North Georgia. Live data comes straight from the National Weather Service API. I'm a trained-eye storm watcher, not a meteorologist — when severe weather threatens, trust your local NWS warnings first. This site is my own report, for my own community.</p>
+                </div>
+                <div class="about-card">
+                    <h3>🌿 The Wildlife Side</h3>
+                    <p>Everything here is what actually shows up in the yard. Feeders, trees, and a camera pointed at the good stuff. Photos are mine, taken from the porch — nobody gets chased, nobody gets harassed. Just documentation of the neighborhood.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>North Georgia Weather &amp; Wildlife — from the ridge line to the treeline. ⚡🌿</p>
+        <p style="margin-top:4px;">Weather data: National Weather Service (api.weather.gov) · Not affiliated with NWS</p>
+        <div class="uprock-note">
+            Built with UpRock — my devices earn UPT sharing idle bandwidth.
+            <a href="https://link.uprock.com/i/f0997b88" target="_blank">Join with my link, we both earn.</a>
+        </div>
+    </footer>
+
+    <script>
+        const POINT = '34.1010,-84.5190';
+        const REPO = 'AnchorToken-dev/North-GA-Wildlife';
+
+        async function fetchJson(url) {
+            const r = await fetch(url, { headers: { 'Accept': 'application/geo+json' } });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        function esc(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        async function loadCurrent() {
+            try {
+                const pts = await fetchJson('https://api.weather.gov/points/' + POINT);
+                const fc = await fetchJson(pts.properties.forecast);
+                const p = fc.properties.periods[0];
+                document.getElementById('ticker').innerHTML =
+                    '<span class="hot">' + p.name + ':</span> ' + p.temperature + '°' + p.temperatureUnit +
+                    ' · ' + p.shortForecast + ' · Wind ' + p.windSpeed + ' ' + p.windDirection +
+                    ' &nbsp;·&nbsp; North Georgia Weather &amp; Wildlife — live from Woodstock &nbsp;·&nbsp; ' +
+                    'Skywarn spotter trained — reports go to NWS Peachtree City &nbsp;·&nbsp; ' +
+                    'Severe weather? Check local warnings first &nbsp;·&nbsp; ';
+                const vals = document.querySelectorAll('#cond-strip .v');
+                vals[0].textContent = p.temperature + '°' + p.temperatureUnit;
+                vals[1].textContent = p.windSpeed.replace(' mph', '') + ' mph ' + p.windDirection;
+                vals[2].textContent = p.shortForecast;
+                vals[3].textContent = (p.relativeHumidity && p.relativeHumidity.value != null) ? p.relativeHumidity.value + '%' : '—';
+            } catch (e) {
+                document.getElementById('ticker').innerHTML = 'North Georgia Weather &amp; Wildlife — live from Woodstock';
+            }
+        }
+
+        async function loadLatest() {
+            const el = document.getElementById('latest-report');
+            try {
+                const r = await fetch('https://api.github.com/repos/' + REPO + '/issues?labels=report&state=all&sort=created&direction=desc&per_page=1');
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const issues = await r.json();
+                if (!issues.length) {
+                    el.innerHTML = '<span class="lt-kick">☝ Latest Field Report</span><h3>No reports yet — the first one is coming soon.</h3>';
+                    return;
+                }
+                const i = issues[0];
+                const date = new Date(i.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+                const body = esc(i.body || '').split('\n')[0].slice(0, 140);
+                el.innerHTML = '<span class="lt-kick">☝ Latest Field Report · ' + date + '</span>' +
+                    '<h3>' + esc(i.title) + '</h3>' +
+                    '<p>' + body + '…</p>' +
+                    '<a href="weather.html">Read all field reports →</a>';
+            } catch (e) {
+                el.innerHTML = '<span class="lt-kick">☝ Latest Field Report</span><h3>Unavailable right now.</h3>';
+            }
+        }
+
+        loadCurrent();
+        loadLatest();
+    </script>
+</body>
+</html>
