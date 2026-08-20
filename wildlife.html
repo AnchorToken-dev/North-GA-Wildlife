@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wildlife — North Georgia Weather &amp; Wildlife</title>
+    <meta name="description" content="North Georgia wildlife: live cams from Berry College eagles and the Chattahoochee forest, USGS river cams, and backyard species gallery.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="brand"><span class="bolt">⚡</span> N.GA<span class="leaf">WX+WILD</span></div>
+        <div class="navlinks">
+            <a href="index.html">Home</a>
+            <a href="weather.html">Weather</a>
+            <a href="wildlife.html" class="active">Wildlife</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <span class="kicker">Live from the yard — and beyond</span>
+        <h1>Wildlife <span class="line2">Watch</span></h1>
+        <p class="tag">Whoever shows up at the feeders gets documented. Live cams, the neighborhood crew, and photos from the porch.</p>
+    </header>
+
+    <section id="cams">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">Live right now</span>
+                <h2>Wildlife <span>Cams</span></h2>
+                <p>The Berry College eagle nest and a 24/7 look at the Chattahoochee forest — two windows into North Georgia.</p>
+            </div>
+
+            <div class="cam-grid">
+                <div class="cam">
+                    <span class="cam-label"><span class="live-dot"></span>Berry College Eagles</span>
+                    <iframe src="https://vimeo.com/event/4809079/embed" title="Berry College eagle cam" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="cam">
+                    <span class="cam-label"><span class="live-dot"></span>Chattahoochee Forest</span>
+                    <iframe src="https://www.youtube.com/embed/rQUH9AbcLBs" title="Chattahoochee National Forest live cam" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <p style="margin-top:20px; color:var(--muted); font-size:0.9rem;">
+                More live cams: <a href="https://ga.water.usgs.gov/rivercam/webcam-helenAPI2b.php" target="_blank" style="color:var(--cyan);">Chattahoochee River @ Helen</a> ·
+                <a href="https://ga.water.usgs.gov/rivercam/webcam-columbus.php" target="_blank" style="color:var(--cyan);">Chattahoochee River @ Columbus</a> (USGS)
+            </p>
+            <p style="margin-top:6px; color:var(--muted); font-size:0.8rem;">
+                My backyard cam is coming — this is the view while it's being built.
+            </p>
+        </div>
+    </section>
+
+    <section id="gallery" style="background:var(--panel);">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">The neighborhood crew</span>
+                <h2>Yard <span>Gallery</span></h2>
+                <p>Who shows up at the feeders. Photos are mine, taken from the porch.</p>
+            </div>
+
+            <div class="gallery">
+                <div class="g-card"><div class="ph">🐦</div><div class="cap"><div class="sp">Carolina Chickadee</div><div class="cm">Year-round regular at the feeder</div><span class="soon">Photo coming</span></div></div>
+                <div class="g-card"><div class="ph">🐿️</div><div class="cap"><div class="sp">Eastern Gray Squirrel</div><div class="cm">The feeder's main character</div><span class="soon">Photo coming</span></div></div>
+                <div class="g-card"><div class="ph">🐿️</div><div class="cap"><div class="sp">Eastern Chipmunk</div><div class="cm">Fast, loud, always busy</div><span class="soon">Photo coming</span></div></div>
+                <div class="g-card"><div class="ph">🦅</div><div class="cap"><div class="sp">Red-tailed Hawk</div><div class="cm">Patrols the treeline</div><span class="soon">Photo coming</span></div></div>
+                <div class="g-card"><div class="ph">🦌</div><div class="cap"><div class="sp">White-tailed Deer</div><div class="cm">Dawn and dusk visitors</div><span class="soon">Photo coming</span></div></div>
+                <div class="g-card"><div class="ph">🦝</div><div class="cap"><div class="sp">Raccoon</div><div class="cm">Night shift crew</div><span class="soon">Photo coming</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>North Georgia Weather &amp; Wildlife — from the ridge line to the treeline. ⚡🌿</p>
+        <p style="margin-top:4px;">Weather data: National Weather Service (api.weather.gov) · Not affiliated with NWS</p>
+        <div class="uprock-note">
+            Built with UpRock — my devices earn UPT sharing idle bandwidth.
+            <a href="https://link.uprock.com/i/f0997b88" target="_blank">Join with my link, we both earn.</a>
+        </div>
+    </footer>
+
+</body>
+</html>
