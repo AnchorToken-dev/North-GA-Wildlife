@@ -93,11 +93,11 @@
     </footer>
 
     <script>
-        const NGA_COUNTIES = [
-            'Cherokee','Cobb','Bartow','Gordon','Murray','Whitfield','Fannin','Union','Towns','Rabun',
-            'Habersham','White','Lumpkin','Dawson','Forsyth','Pickens','Gilmer','Hall','Banks','Stephens',
-            'Franklin','Hart','Elbert','Madison','Jackson','Gwinnett','Paulding','Carroll','Douglas','Fulton'
-        ];
+        const NGA_ZONES = [
+    'GAZ004','GAZ005','GAZ006','GAZ007','GAZ008','GAZ009','GAZ010','GAZ012','GAZ013','GAZ014',
+    'GAZ015','GAZ016','GAZ017','GAZ018','GAZ020','GAZ021','GAZ022','GAZ023','GAZ024','GAZ025',
+    'GAZ026','GAZ027','GAZ028','GAZ029','GAZ031','GAZ032','GAZ033','GAZ034','GAZ042','GAZ043','GAZ044'
+     ];
         const POINT = '34.1010,-84.5190';
         const REPO = 'AnchorToken-dev/North-GA-Wildlife';
 
@@ -166,7 +166,7 @@
                const data = await fetchJson('https://api.weather.gov/alerts/active?area=GA');
                const feats = (data.features || []).filter(f => {
                const ugc = (f.properties.geocode && f.properties.geocode.UGC) || [];
-            return ugc.some(z => z.startsWith('GAZ'));
+            return ugc.some(z => NGA_ZONES.includes(z));
         });
                 const sevOrder = { 'Extreme': 0, 'Severe': 1, 'Moderate': 2, 'Minor': 3, 'Unknown': 4 };
                 feats.sort((a, b) => (sevOrder[a.properties.severity] ?? 4) - (sevOrder[b.properties.severity] ?? 4));
