@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather — North Georgia Weather &amp; Wildlife</title>
+    <meta name="description" content="North Georgia weather: live NWS watches, warnings, and advisories, 7-day forecast, KFFC radar, and field reports from Woodstock.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="brand"><span class="bolt">⚡</span> N.GA<span class="leaf">WX+WILD</span></div>
+        <div class="navlinks">
+            <a href="index.html">Home</a>
+            <a href="weather.html" class="active">Weather</a>
+            <a href="wildlife.html">Wildlife</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <span class="kicker">Live Data · NWS Feed</span>
+        <h1>Weather <span class="line2">Watch</span></h1>
+        <p class="tag">Live watches, warnings, and advisories for North Georgia counties, the 7-day outlook, and KFFC radar — pulled straight from the National Weather Service.</p>
+    </header>
+
+    <div class="ticker"><div class="ticker-inner" id="ticker">Loading live conditions…</div></div>
+
+    <section id="alerts-sec">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">Active · North Georgia</span>
+                <h2>Alerts <span>&amp; Warnings</span></h2>
+                <p>Filtered to ~30 North Georgia counties. Severe gets red, moderate gets amber — all of it from NWS Peachtree City.</p>
+            </div>
+            <div id="alerts"><p class="msg-error">Loading alerts…</p></div>
+        </div>
+    </section>
+
+    <section id="forecast-sec" style="background:var(--panel);">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">7-Day · Woodstock</span>
+                <h2>The <span>Forecast</span></h2>
+                <p>Day by day from NWS, straight from the source.</p>
+            </div>
+            <div id="forecast"></div>
+        </div>
+    </section>
+
+    <section id="radar-sec">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">KFFC · Peachtree City</span>
+                <h2>Radar <span>Loop</span></h2>
+                <p>North Georgia radar from NWS Peachtree City. If it's raining on the ridge, it shows up here first.</p>
+            </div>
+            <div class="radar-block">
+                <h3>KFFC Regional Radar</h3>
+                <p>Latest loop — updates every few minutes.</p>
+                <img id="radar-img" src="https://radar.weather.gov/ridge/standard/KFFC_loop.gif" alt="KFFC radar loop" onerror="this.style.display='none';document.getElementById('radar-fallback').style.display='block';">
+                <div id="radar-fallback" style="display:none; padding:12px 0;">
+                    <a href="https://radar.weather.gov/?settings=v1_eyJhZ2VuZGEiOm51bGwsImFuaW1hdGlvblNwZWVkIjoxMDAsImNvbG9ycyI6InZpc2libGUiLCJkYXRlIjoiMjAyNS0wMS0wMVQwMDowMDowMFoiLCJlbWFpbCI6bnVsbCwiZm9yY2Vsb3dQb3NpdGlvbiI6bnVsbCwiZm9yY2Vsb3dTZXR0aW5ncyI6bnVsbCwiaG9tZVBvc2l0aW9uIjpudWxsLCJob3ZlclRpbWVPZmZzZXQiOjAsImxvY2F0aW9uIjpudWxsLCJsb29wIjp0cnVlLCJtZW51IjoidmlzaWJsZSIsIm5hdGl2ZSI6ZmFsc2UsInNob3dMYWJlbHMiOnRydWUsInNob3dNb3VzZU92ZXIiOnRydWUsInNob3dPcGFjaXR5IjowLjgsInNob3dSYW5nZXNSaW5ncyI6ZmFsc2UsInNob3dUaW1lIjpmYWxzZSwic2hvd1pvb21Db250cm9sIjp0cnVlLCJ6b29tIjo1fQ==" target="_blank">Open interactive radar →</a>
+                </div>
+                <p class="updated">Radar: NWS KFFC</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="reports-sec" style="background:var(--panel);">
+        <div class="wrap">
+            <div class="section-head">
+                <span class="kick">From the porch</span>
+                <h2>Field <span>Reports</span></h2>
+                <p>My own words — posted straight from GitHub, no code needed. Newest first.</p>
+            </div>
+            <div class="notes" style="margin-top:0;">
+                <div id="reports-list"><p class="msg-error">Loading reports…</p></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>North Georgia Weather &amp; Wildlife — from the ridge line to the treeline. ⚡🌿</p>
+        <p style="margin-top:4px;">Weather data: National Weather Service (api.weather.gov) · Not affiliated with NWS</p>
+        <div class="uprock-note">
+            Built with UpRock — my devices earn UPT sharing idle bandwidth.
+            <a href="https://link.uprock.com/i/f0997b88" target="_blank">Join with my link, we both earn.</a>
+        </div>
+    </footer>
+
+    <script>
+        const NGA_COUNTIES = [
+            'Cherokee','Cobb','Bartow','Gordon','Murray','Whitfield','Fannin','Union','Towns','Rabun',
+            'Habersham','White','Lumpkin','Dawson','Forsyth','Pickens','Gilmer','Hall','Banks','Stephens',
+            'Franklin','Hart','Elbert','Madison','Jackson','Gwinnett','Paulding','Carroll','Douglas','Fulton'
+        ];
+        const POINT = '34.1010,-84.5190';
+        const REPO = 'AnchorToken-dev/North-GA-Wildlife';
+
+        async function fetchJson(url) {
+            const r = await fetch(url, { headers: { 'Accept': 'application/geo+json' } });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        function esc(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function renderMd(s) {
+            let h = esc(s);
+            h = h.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            h = h.replace(/`([^`]+)`/g, '<code>$1</code>');
+            h = h.replace(/\n/g, '<br>');
+            return h;
+        }
+
+        function fmtTime(iso) {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+        }
+
+        async function loadCurrent() {
+            try {
+                const pts = await fetchJson('https://api.weather.gov/points/' + POINT);
+                const fc = await fetchJson(pts.properties.forecast);
+                const p = fc.properties.periods[0];
+                document.getElementById('ticker').innerHTML =
+                    '<span class="hot">' + p.name + ':</span> ' + p.temperature + '°' + p.temperatureUnit +
+                    ' · ' + p.shortForecast + ' · Wind ' + p.windSpeed + ' ' + p.windDirection +
+                    ' &nbsp;·&nbsp; North Georgia Weather &amp; Wildlife — live from Woodstock &nbsp;·&nbsp; ' +
+                    'Skywarn spotter trained — reports go to NWS Peachtree City &nbsp;·&nbsp; ' +
+                    'Severe weather? Check local warnings first &nbsp;·&nbsp; ';
+            } catch (e) {
+                document.getElementById('ticker').innerHTML = 'North Georgia Weather &amp; Wildlife — live from Woodstock';
+            }
+        }
+
+        async function loadForecast() {
+            const el = document.getElementById('forecast');
+            try {
+                const pts = await fetchJson('https://api.weather.gov/points/' + POINT);
+                const fc = await fetchJson(pts.properties.forecast);
+                const periods = fc.properties.periods.slice(0, 7);
+                el.innerHTML = '<div class="forecast">' + periods.map(p => (
+                    '<div class="fday">' +
+                    '<div class="d">' + p.name + '</div>' +
+                    (p.icon ? '<img src="' + p.icon + '" alt="">' : '') +
+                    '<div class="t">' + p.temperature + '°' + p.temperatureUnit + '</div>' +
+                    '<div class="s">' + p.shortForecast + '</div>' +
+                    '</div>'
+                )).join('') + '</div>';
+            } catch (e) {
+                el.innerHTML = '<p class="msg-error">Forecast unavailable: ' + e.message + '</p>';
+            }
+        }
+
+        async function loadAlerts() {
+            const el = document.getElementById('alerts');
+            try {
+                const data = await fetchJson('https://api.weather.gov/alerts/active?area=GA');
+                const feats = (data.features || []).filter(f => {
+                    const area = (f.properties.areaDesc || '').toLowerCase();
+                    return NGA_COUNTIES.some(c => area.includes(c.toLowerCase()));
+                });
+                const sevOrder = { 'Extreme': 0, 'Severe': 1, 'Moderate': 2, 'Minor': 3, 'Unknown': 4 };
+                feats.sort((a, b) => (sevOrder[a.properties.severity] ?? 4) - (sevOrder[b.properties.severity] ?? 4));
+
+                if (!feats.length) {
+                    el.innerHTML = '<div class="no-alerts"><strong>ALL CLEAR —</strong> no active watches, warnings, or advisories for North Georgia right now.</div>';
+                    return;
+                }
+                el.innerHTML = feats.slice(0, 8).map(f => {
+                    const p = f.properties;
+                    const sev = p.severity || 'Unknown';
+                    return '<div class="alert-card sev-' + sev + '">' +
+                        '<div class="top"><span class="ev">' + p.event + '</span><span class="sev-badge">' + sev + '</span></div>' +
+                        '<div class="headline">' + p.headline + '</div>' +
+                        '<div class="meta">' + (p.areaDesc || '') + ' · Expires ' + fmtTime(p.expires) + '</div>' +
+                        '</div>';
+                }).join('');
+            } catch (e) {
+                el.innerHTML = '<p class="msg-error">Alerts unavailable: ' + e.message + '</p>';
+            }
+        }
+
+        async function loadReports() {
+            const el = document.getElementById('reports-list');
+            try {
+                const r = await fetch('https://api.github.com/repos/' + REPO + '/issues?labels=report&state=all&sort=created&direction=desc&per_page=10');
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                const issues = await r.json();
+                if (!issues.length) {
+                    el.innerHTML = '<p style="margin-top:12px; color:var(--muted); font-size:0.9rem;">No field reports yet — the first one is coming soon.</p>';
+                    return;
+                }
+                el.innerHTML = issues.map(issue => {
+                    const date = new Date(issue.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+                    return '<div class="report-card">' +
+                        '<div class="r-top"><span class="r-title">' + esc(issue.title) + '</span><span class="r-date">' + date + '</span></div>' +
+                        '<div class="r-body">' + renderMd(issue.body || '') + '</div>' +
+                        '</div>';
+                }).join('');
+            } catch (e) {
+                el.innerHTML = '<p class="msg-error">Reports unavailable: ' + e.message + '</p>';
+            }
+        }
+
+        loadCurrent();
+        loadForecast();
+        loadAlerts();
+        loadReports();
+    </script>
+</body>
+</html>
